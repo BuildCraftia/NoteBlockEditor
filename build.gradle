@@ -1,30 +1,34 @@
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.6.0"
-    id "com.github.johnrengelman.shadow" version "7.1.0"
+    id "org.jetbrains.kotlin.jvm" version "2.2.0"
+    id "com.gradleup.shadow" version "8.3.5"
 }
 
 group 'com.itsazza'
 version '1.4.0'
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
 repositories {
     mavenLocal()
     mavenCentral()
 
-    maven { url "https://repo.destroystokyo.com/repository/maven-public" }
+    maven { url "https://repo.papermc.io/repository/maven-public/" }
     maven { url "https://repo.minebench.de" }
-    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"}
 }
 
 dependencies {
-    implementation "de.themoep:inventorygui:1.5-SNAPSHOT"
-    implementation 'org.bstats:bstats-bukkit:2.2.1'
-    compileOnly "org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT"
-    compileOnly "com.itsazza.noteblocksplus:noteblocksplus:1.1"
+    implementation "de.themoep:inventorygui:1.6.1-SNAPSHOT"
+    implementation 'org.bstats:bstats-bukkit:3.0.2'
+    compileOnly "io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT"
 }
 
 shadowJar {
     minimize()
     relocate('org.bstats', 'com.itsazza.resources.bstats')
     relocate('de.themoep', 'com.itsazza.resources.themoep')
-    archiveName("NoteBlockEditor-${this.version}.jar")
+    archiveFileName.set("NoteBlockEditor-${this.version}.jar")
 }

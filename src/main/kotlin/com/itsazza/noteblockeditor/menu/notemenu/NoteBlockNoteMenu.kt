@@ -67,7 +67,7 @@ object NoteBlockNoteMenu {
         val item = ItemStack(Material.NOTE_BLOCK)
         val itemMeta = item.itemMeta!!
         if (Note(note.value - 1) == currentNote) {
-            itemMeta.addEnchant(Enchantment.LOOT_BONUS_MOBS, 1, true)
+            itemMeta.addEnchant(Enchantment.LOOTING, 1, true)
             itemMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
             item.itemMeta = itemMeta
         }
@@ -78,14 +78,14 @@ object NoteBlockNoteMenu {
             note.value,
             GuiElement.Action {
                 val newNote = Note(note.value - 1)
-                val player = it.event.whoClicked as Player
+                val player = it.whoClicked as Player
 
                 when {
-                    it.event.isRightClick -> {
+                    it.type.isRightClick -> {
                         player.playNote(player.location, instrument, newNote)
                         return@Action true
                     }
-                    it.event.isLeftClick -> {
+                    it.type.isLeftClick -> {
                         player.playNote(player.location, instrument, newNote)
                         val data = block.blockData as NoteBlock
                         data.note = newNote

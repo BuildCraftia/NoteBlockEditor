@@ -8,20 +8,17 @@ import org.bukkit.Bukkit
 import org.bukkit.Instrument
 import org.bukkit.Material
 import org.bukkit.plugin.java.JavaPlugin
-import kotlin.properties.Delegates
 
 class NoteBlockEditorPlugin : JavaPlugin() {
     companion object {
         lateinit var instance: NoteBlockEditorPlugin
             private set
-        var noteBlocksPlusEnabled by Delegates.notNull<Boolean>()
     }
 
     val instruments = HashMap<Instrument, Material>()
 
     override fun onEnable() {
         instance = this
-        noteBlocksPlusEnabled = Bukkit.getPluginManager().isPluginEnabled("NoteBlocksPlus")
 
         getCommand("noteblock")?.setExecutor(NoteBlockCommand)
         saveDefaultConfig()

@@ -49,7 +49,7 @@ object BlockMenu {
             '0',
             ItemStack(Material.NOTE_BLOCK, note.value),
             {
-                val player = it.event.whoClicked as Player
+                val player = it.whoClicked as Player
                 Noteblock.giveBlock(player, note.value)
                 player.playSound(player.location, Sound.BLOCK_NOTE_BLOCK_BIT, 1f, 1f)
                 return@StaticGuiElement true

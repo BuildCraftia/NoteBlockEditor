@@ -5,7 +5,6 @@ import com.itsazza.noteblockeditor.menu.buttons.closeButton
 import com.itsazza.noteblockeditor.menu.noteBlockMenuTemplate
 import com.itsazza.noteblockeditor.menu.notemenu.NoteBlockNoteMenu
 import com.itsazza.noteblockeditor.util.canPlace
-import com.itsazza.noteblocksplus.api.NoteBlocksPlusAPI
 import de.themoep.inventorygui.GuiElementGroup
 import de.themoep.inventorygui.InventoryGui
 import de.themoep.inventorygui.StaticGuiElement
@@ -45,12 +44,6 @@ object NoteBlockInstrumentMenu {
             group.addElement(createInstrumentButton(block, currentNote, instrument.key, instrument.value))
         }
 
-        if (NoteBlockEditorPlugin.noteBlocksPlusEnabled) {
-            NoteBlocksPlusAPI.getSounds().forEach {
-                group.addElement(createNoteBlocksPlusInstrumentButton(block, currentNote, it.value, it.key))
-            }
-        }
-
         gui.addElement(group)
         gui.addElement(
             StaticGuiElement(
@@ -76,15 +69,15 @@ object NoteBlockInstrumentMenu {
         icon: Material
     ): StaticGuiElement {
         val item = ItemStack(icon)
-        val instrumentName = newInstrument.name.split("_").joinToString(" ") { it.toLowerCase().capitalize() }
+        val instrumentName = newInstrument.name.split("_").joinToString(" ") { it.lowercase().capitalize() }
 
         return StaticGuiElement(
             'i',
             item,
             {
-                val player = it.event.whoClicked as Player
+                val player = it.whoClicked as Player
                 when {
-                    it.event.isLeftClick -> {
+                    it.type.isLeftClick -> {
                         setBlockBelowNoteBlock(player, block, icon).also { response ->
                             if (!response) {
                                 return@StaticGuiElement true
@@ -93,7 +86,7 @@ object NoteBlockInstrumentMenu {
                         it.gui.destroy()
                         return@StaticGuiElement true
                     }
-                    it.event.isRightClick -> {
+                    it.type.isRightClick -> {
                         player.playNote(player.location, newInstrument, note)
                         return@StaticGuiElement true
                     }
@@ -105,41 +98,6 @@ object NoteBlockInstrumentMenu {
             instance.getLangString("menu-instrument-change-title").format(instrumentName),
             *instance.getLangString("menu-instrument-change-description").format(instrumentName).split('\n')
                 .toTypedArray()
-        )
-    }
-
-    private fun createNoteBlocksPlusInstrumentButton(
-        block: Block,
-        note: Note,
-        sound: String,
-        icon: Material
-    ): StaticGuiElement {
-        val name = sound.replace("^[^:]+:".toRegex(), "")
-        val soundString = name.split(".", "_").joinToString(" ") { it.toLowerCase().capitalize() }
-
-        return StaticGuiElement(
-            'i',
-            ItemStack(icon),
-            {
-                val player = it.event.whoClicked as Player
-                when {
-                    it.event.isLeftClick -> {
-                        setBlockBelowNoteBlock(player, block, icon).also { response ->
-                            if (!response) return@StaticGuiElement true
-                        }
-                        it.gui.destroy()
-                        return@StaticGuiElement true
-                    }
-                    it.event.isRightClick -> {
-                        val pitch = NoteBlocksPlusAPI.getNotePitch(note.id.toFloat())
-                        player.playSound(player.location, sound, 1f, pitch)
-                        return@StaticGuiElement true
-                    }
-                    else -> return@StaticGuiElement true
-                }
-            },
-            instance.getLangString("menu-instrument-change-title").format(soundString),
-            *instance.getLangString("menu-instrument-change-description").format(soundString).split('\n').toTypedArray()
         )
     }
 
